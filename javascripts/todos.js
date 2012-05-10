@@ -50,11 +50,11 @@
     tagName: "li",
     className: "todo",
   
-    template: _.template("<input type='checkbox' class='todo-check' /><div class='todo-content'></div><span class='todo-destroy'></span><input type='text' class='todo-input' />"),
+    template: _.template("<input type='checkbox' class='todo-check' /><div class='todo-label'></div><div class='todo-content'></div><span class='todo-destroy'></span><input type='text' class='todo-label'><input type='text' class='todo-input' />"),
   
     events: {
       "click .todo-check"      : "toggleDone",
-      "dblclick .todo-content" : "edit",
+      "dblclick .todo-input" : "edit",
       "click .todo-destroy"    : "clear",
       "keypress .todo-input"   : "updateOnEnter"
     },
@@ -75,9 +75,12 @@
   
     setContent: function() {      
       var content = this.model.get('content');
+      var label = this.model.get('label');
+      var taggedLabel = "[" + label + "]";
       this.$('.todo-content').set("html", content);
+      //this.$('div .todo-label').set("html", taggedLabel);
       this.$('.todo-input').setProperty("value", content);
-      
+      this.$('.todo-label').setProperty("value", label);
       if (this.model.get('done')) {
         this.$(".todo-check").setProperty("checked", "checked");
         $(this.el).addClass("done");
@@ -87,6 +90,7 @@
       }
       
       this.input = this.$(".todo-input");
+      this.label = this.$(".todo-label");
       this.input.addEvent('blur', this.close);
     },
     
@@ -98,6 +102,7 @@
       $(this.el).addClass("editing");
       //this.input.fireEvent("focus");
       this.input.focus();
+      this.label.focus();
     },
     
     close: function() {
@@ -142,6 +147,7 @@
       _.bindAll(this, 'addOne', 'addAll', 'render');
     
       this.input = this.$("#new-todo");
+      this.label = this.$("#new-todo-label");
       
       Todos.bind('add',     this.addOne);
       Todos.bind('refresh', this.addAll);
@@ -172,9 +178,11 @@
     createOnEnter: function(e) {
       if (e.code != 13) return;
       Todos.create({
+      	label: this.label.getProperty("value"),
         content: this.input.getProperty("value"),
         done:    false
       });
+      this.label.setProperty("value", "");
       this.input.setProperty("value", "");
     },
   
