@@ -50,7 +50,7 @@
     tagName: "li",
     className: "todo",
   
-    template: _.template("<input type='checkbox' class='todo-check' /><div class='todo-label'></div><div class='todo-content'></div><span class='todo-destroy'></span><input type='text' class='todo-label'><input type='text' class='todo-input' />"),
+    template: _.template("<input type='checkbox' class='todo-check' /><div class='todo-taggedLabel'></div><div class='todo-content'></div><span class='todo-destroy'></span><input type='text' class='todo-label'><input type='text' class='todo-input' />"),
   
     events: {
       "click .todo-check"      : "toggleDone",
@@ -77,8 +77,9 @@
       var content = this.model.get('content');
       var label = this.model.get('label');
       var taggedLabel = "[" + label + "]";
-      this.$('.todo-content').set("html", content);
-      //this.$('div .todo-label').set("html", taggedLabel);
+      var taggedContent = taggedLabel + "  " + content;
+      this.$('.todo-content').set("html", taggedContent);
+      //this.$('.todo-taggedLabel').set("html", taggedLabel);
       this.$('.todo-input').setProperty("value", content);
       this.$('.todo-label').setProperty("value", label);
       if (this.model.get('done')) {
@@ -102,7 +103,7 @@
       $(this.el).addClass("editing");
       //this.input.fireEvent("focus");
       this.input.focus();
-      this.label.focus();
+      //this.label.focus();
     },
     
     close: function() {
